@@ -8,8 +8,6 @@ project(
 	]
 )
 
-project_version = meson.project_version()
-
 inc = include_directories('include')
 
 sources = files(
@@ -22,4 +20,16 @@ executable(
 	sources,
 	include_directories: inc,
 	install: true
+)
+
+test_executable = executable(
+	'test_hashmap',
+	'tests/test_hashmap.c',
+	'src/hashmap.c',
+	include_directories: inc,
+)
+
+test(
+	'hashmap',
+	test_executable
 )
