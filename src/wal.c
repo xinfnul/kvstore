@@ -28,7 +28,7 @@ struct wal {
  * 	key 			key_length bytes
  * 	value 			value_length bytes
  *
- * All integer fields are stored in big-edian order.
+ * All integer fields are stored in big-endian order.
  */
 
 static void encode_u32(uint8_t *buffer, uint32_t value) {

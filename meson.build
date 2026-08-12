@@ -19,7 +19,8 @@ inc = include_directories('include')
 kvstore_sources = files(
 	'src/hashmap.c',
 	'src/wal.c',
-	'src/database.c'
+	'src/database.c',
+	'src/protocol.c',
 )
 
 kvstore_lib = static_library(
@@ -85,6 +86,18 @@ test(
 	suite: 'unit',
 )
 
+test_protocol = executable(
+	'test_protocol',
+	'tests/test_protocol.c',
+	dependencies: kvstore_dep,
+)
+
+test(
+	'protocol',
+	test_protocol,
+	suite: 'unit',
+)
+
 # ---------------------------------------------------------------------
 # Installation
 # ---------------------------------------------------------------------
@@ -93,5 +106,6 @@ install_headers(
   'include/hashmap.h',
   'include/wal.h',
   'include/database.h',
+  'include/protocol.h',
   subdir: 'kvstore',
 )
