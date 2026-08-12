@@ -1,5 +1,5 @@
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef KVSTORE_DATABASE_H
+#define KVSTORE_DATABASE_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -7,19 +7,28 @@
 typedef struct database database_t;
 
 /*
- * Create a new database.
+ * Open or create a new database backed by a WAL file.
  *
- * Returns NULL on allocation failure.
+ * If the WAL already contains records, they are replayed to
+ * reconstruct the current database state.
+ *
+ * Returns NULL on allocation failure, WAL failure, or
+ * WAL replay failure.
  */
-database_t *database_create(void);
+database_t *database_open(const char *wal_path);
 
 /*
  * Destroy the database and release all resources.
+ *
+ * The WAL is closed, but its file is not deleted.
  */
 void database_destroy(database_t *db);
 
 /*
  * Insert or update key/value pair.
+ *
+ * The operation is written to the WAL and made durable before
+ * the in-memory database is updated.
  *
  * The database makes its own copies of key and value.
  *
@@ -39,6 +48,9 @@ const char *database_get(const database_t *db, const char *key);
 
 /*
  * Delete a key-value pair.
+ *
+ * The deletion is written to the WAL and made durable before
+ * the in-memory database is updated.
  *
  * Returns true if the key existed and was deleted.
  * Returns false if the key does not exist.

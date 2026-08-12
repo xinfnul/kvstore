@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "hashmap.h"
+#include <kvstore/hashmap.h>
 
 int main(void) {
   hashmap_t *map = hashmap_create(0);

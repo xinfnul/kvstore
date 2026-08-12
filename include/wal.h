@@ -1,5 +1,5 @@
-#ifndef WAL_H
-#define WAL_H
+#ifndef KVSTORE_WAL_H
+#define KVSTORE_WAL_H
 
 #include <stdbool.h>
 #include <stddef.h>

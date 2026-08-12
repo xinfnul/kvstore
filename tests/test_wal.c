@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define TEST_WAL_PATH "test_wal.log"
+#define TEST_WAL_PATH "test_wal.wal"
 
 typedef struct {
   size_t count;

@@ -1,4 +1,4 @@
-#include "wal.h"
+#include <kvstore/wal.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -72,9 +72,9 @@ static bool read_all(int fd, void *buffer, size_t length) {
   uint8_t *data = buffer;
 
   while (length > 0) {
-    size_t read_count = read(fd, data, length);
+    ssize_t read_count = read(fd, data, length);
 
-    if ((int)read_count < 0) {
+    if (read_count < 0) {
       if (errno == EINTR) {
         continue;
       }
@@ -213,8 +213,7 @@ bool wal_replay(wal_t *wal, wal_replay_callback callback, void *user_data) {
   }
 
   /*
-   * Save the current append position.
-   * We don't want replay to interfere with future writes.
+   * Start reading from the beginning of the WAL.
    */
   if (lseek(wal->fd, 0, SEEK_SET) == (off_t)-1) {
     return false;
