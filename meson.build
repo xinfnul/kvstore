@@ -21,6 +21,7 @@ kvstore_sources = files(
 	'src/wal.c',
 	'src/database.c',
 	'src/protocol.c',
+	'src/byteorder.c',
 )
 
 kvstore_lib = static_library(
@@ -107,5 +108,6 @@ install_headers(
   'include/wal.h',
   'include/database.h',
   'include/protocol.h',
+  'include/byteorder.h',
   subdir: 'kvstore',
 )

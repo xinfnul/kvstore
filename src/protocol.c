@@ -1,3 +1,4 @@
+#include <kvstore/byteorder.h>
 #include <kvstore/protocol.h>
 
 #include <stdlib.h>
@@ -25,20 +26,9 @@
  */
 
 #define REQUEST_FIXED_PREFIX_SIZE 6u
-#define REQUEST_HEADER_SIZE 10u
+#define REQUEST_FIXED_SUFFIX_SIZE 4u
+
 #define RESPONSE_HEADER_SIZE 6u
-
-static void encode_u32(uint8_t *buffer, uint32_t value) {
-  buffer[0] = (uint8_t)(value >> 24);
-  buffer[1] = (uint8_t)(value >> 16);
-  buffer[2] = (uint8_t)(value >> 8);
-  buffer[3] = (uint8_t)value;
-}
-
-static uint32_t decode_u32(const uint8_t *buffer) {
-  return ((uint32_t)buffer[0] << 24) | ((uint32_t)buffer[1] << 16) |
-         ((uint32_t)buffer[2] << 8) | (uint32_t)buffer[3];
-}
 
 static int valid_message_type(protocol_message_type_t type) {
   return type == PROTOCOL_MSG_SET || type == PROTOCOL_MSG_GET ||
@@ -90,8 +80,8 @@ int protocol_encode_request(const protocol_request_t *request, uint8_t **buffer,
     return -1;
   }
 
-  total_size = REQUEST_HEADER_SIZE + (size_t)request->key_length +
-               (size_t)request->value_length;
+  total_size = REQUEST_FIXED_PREFIX_SIZE + (size_t)request->key_length +
+               REQUEST_FIXED_SUFFIX_SIZE + (size_t)request->value_length;
 
   out = malloc(total_size);
 
@@ -112,8 +102,9 @@ int protocol_encode_request(const protocol_request_t *request, uint8_t **buffer,
              request->value_length);
 
   if (request->value_length > 0) {
-    memcpy(out + REQUEST_HEADER_SIZE + request->key_length, request->value,
-           request->value_length);
+    memcpy(out + REQUEST_FIXED_PREFIX_SIZE + request->key_length +
+               REQUEST_FIXED_SUFFIX_SIZE,
+           request->value, request->value_length);
   }
 
   *buffer = out;
@@ -132,7 +123,7 @@ int protocol_decode_request(const uint8_t *buffer, size_t buffer_len,
     return -1;
   }
 
-  if (buffer_len < REQUEST_HEADER_SIZE) {
+  if (buffer_len < REQUEST_FIXED_PREFIX_SIZE + REQUEST_FIXED_SUFFIX_SIZE) {
     return -1;
   }
 
@@ -155,7 +146,8 @@ int protocol_decode_request(const uint8_t *buffer, size_t buffer_len,
    * version + type + key_length + value_length
    * The key occupies the bytes between the key_length and value_length.
    */
-  if ((size_t)key_length > buffer_len - REQUEST_HEADER_SIZE) {
+  if ((size_t)key_length >
+      buffer_len - (REQUEST_FIXED_PREFIX_SIZE + REQUEST_FIXED_SUFFIX_SIZE)) {
     return -1;
   }
 
@@ -165,8 +157,8 @@ int protocol_decode_request(const uint8_t *buffer, size_t buffer_len,
     return -1;
   }
 
-  expected_size =
-      REQUEST_HEADER_SIZE + (size_t)key_length + (size_t)value_length;
+  expected_size = REQUEST_FIXED_PREFIX_SIZE + (size_t)key_length +
+                  REQUEST_FIXED_SUFFIX_SIZE + (size_t)value_length;
 
   if (expected_size != buffer_len) {
     return -1;
@@ -181,7 +173,8 @@ int protocol_decode_request(const uint8_t *buffer, size_t buffer_len,
   request->key = buffer + REQUEST_FIXED_PREFIX_SIZE;
   request->key_length = key_length;
 
-  request->value = buffer + REQUEST_HEADER_SIZE + key_length;
+  request->value = buffer + REQUEST_FIXED_PREFIX_SIZE + key_length +
+                   REQUEST_FIXED_SUFFIX_SIZE;
 
   request->value_length = value_length;
 
