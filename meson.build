@@ -22,7 +22,7 @@ executable(
 	install: true
 )
 
-test_executable = executable(
+test_hashmap = executable(
 	'test_hashmap',
 	'tests/test_hashmap.c',
 	'src/hashmap.c',
@@ -31,5 +31,17 @@ test_executable = executable(
 
 test(
 	'hashmap',
-	test_executable
+	test_hashmap
+)
+
+test_wal = executable(
+    'test_wal',
+    'tests/test_wal.c',
+    'src/wal.c',
+    include_directories: inc,
+)
+
+test(
+    'wal',
+    test_wal
 )

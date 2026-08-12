@@ -74,7 +74,7 @@ static bool read_all(int fd, void *buffer, size_t length) {
   while (length > 0) {
     size_t read_count = read(fd, data, length);
 
-    if (read_count < 0) {
+    if ((int)read_count < 0) {
       if (errno == EINTR) {
         continue;
       }
@@ -108,7 +108,15 @@ static bool wal_append(wal_t *wal, wal_operation_t operation, const char *key,
     return false;
   }
 
-  if (value_length == 0 || value_length > WAL_MAX_VALUE_SIZE) {
+  if (value_length > WAL_MAX_VALUE_SIZE) {
+    return false;
+  }
+
+  if (operation == WAL_OP_DELETE && value_length != 0) {
+    return false;
+  }
+
+  if (key_length > UINT32_MAX || value_length > UINT32_MAX) {
     return false;
   }
 
