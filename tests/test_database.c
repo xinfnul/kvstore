@@ -1,7 +1,6 @@
 #include "database.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -170,6 +169,7 @@ int main(void) {
   test_update();
   test_delete();
   test_multiple_keys();
+  test_persistence();
   test_invalid_arguments();
 
   return EXIT_SUCCESS;
