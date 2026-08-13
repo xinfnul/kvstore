@@ -22,6 +22,7 @@ kvstore_sources = files(
 	'src/database.c',
 	'src/protocol.c',
 	'src/byteorder.c',
+	'src/command.c',
 )
 
 kvstore_lib = static_library(
@@ -99,6 +100,18 @@ test(
 	suite: 'unit',
 )
 
+test_command = executable(
+	'test_command',
+	'tests/test_command.c',
+	dependencies: kvstore_dep,
+)
+
+test(
+	'command',
+	test_command,
+	suite: 'unit',
+)
+
 # ---------------------------------------------------------------------
 # Installation
 # ---------------------------------------------------------------------
@@ -109,5 +122,6 @@ install_headers(
   'include/database.h',
   'include/protocol.h',
   'include/byteorder.h',
+  'include/command.h',
   subdir: 'kvstore',
 )

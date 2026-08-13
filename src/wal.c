@@ -185,7 +185,7 @@ void wal_close(wal_t *wal) {
 
 bool wal_set(wal_t *wal, const char *key, size_t key_length, const char *value,
              size_t value_length) {
-  if (value == NULL || value_length == 0) {
+  if (value == NULL) {
     return false;
   }
 
