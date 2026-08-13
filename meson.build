@@ -23,6 +23,7 @@ kvstore_sources = files(
 	'src/protocol.c',
 	'src/byteorder.c',
 	'src/command.c',
+	'src/network.c',
 )
 
 kvstore_lib = static_library(
@@ -112,6 +113,18 @@ test(
 	suite: 'unit',
 )
 
+test_network = executable(
+	'test_network',
+	'tests/test_network.c',
+	dependencies: kvstore_dep,
+)
+
+test(
+	'network',
+	test_network,
+	suite: 'unit',
+)
+
 # ---------------------------------------------------------------------
 # Installation
 # ---------------------------------------------------------------------
@@ -123,5 +136,6 @@ install_headers(
   'include/protocol.h',
   'include/byteorder.h',
   'include/command.h',
+  'include/network.h',
   subdir: 'kvstore',
 )
