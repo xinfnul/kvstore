@@ -13,6 +13,7 @@ project(
 inc = include_directories('include')
 
 subdir('src')
+subdir('server')
 subdir('tests')
 
 install_headers(
@@ -23,5 +24,6 @@ install_headers(
   'include/byteorder.h',
   'include/command.h',
   'include/network.h',
+  'server/server.h',
   subdir: 'kvstore',
 )
