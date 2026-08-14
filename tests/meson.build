@@ -62,10 +62,12 @@ test(
     suite: 'unit',
 )
 
+threads_dep = dependency('threads')
+
 test_network = executable(
     'test_network',
     'test_network.c',
-    dependencies: kvstore_dep,
+    dependencies: [kvstore_dep, threads_dep],
 )
 
 test(
