@@ -1,15 +1,15 @@
 # ---------------------------------------------------------------------
-# Server executable
+# Client executable
 # ---------------------------------------------------------------------
 
-kvstore_server_sources = files(
-    'server.c',
+kvstore_client_sources = files(
+    'client.c',
     'main.c',
 )
 
 executable(
-    'kvstore-server',
-    kvstore_server_sources,
+    'kvstore-client',
+    kvstore_client_sources,
     include_directories: inc,
     dependencies: kvstore_dep,
     install: true,

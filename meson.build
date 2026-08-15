@@ -14,6 +14,7 @@ inc = include_directories('include')
 
 subdir('src')
 subdir('server')
+subdir('client')
 subdir('tests')
 
 install_headers(
@@ -25,5 +26,6 @@ install_headers(
   'include/command.h',
   'include/network.h',
   'server/server.h',
+  'client/client.h',
   subdir: 'kvstore',
 )
